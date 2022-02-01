@@ -42,6 +42,6 @@ def test_nw_backtrace():
         assert y[-1] == "-", "Last position is incorrect"
     else:
         assert z[-1] == "-", "Last position is incorrect"
-    assert x == 18, "Score is incorrect"
+    assert x == 17, "Score is incorrect"
 
 
