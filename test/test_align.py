@@ -14,7 +14,11 @@ def test_nw_alignment():
     """
     seq1, _ = read_fasta("./data/test_seq1.fa")
     seq2, _ = read_fasta("./data/test_seq2.fa")
-    pass
+    needle = NeedlemanWunsch("./substitution_matrices/BLOSUM62.mat", -10, -1)
+    assert needle._align_matrix[0, 0] == 0, "Initial match isn't 0"
+    assert np.inf == np.all(needle._back[0, :]), "Not inf backtraces for initial row"
+    assert np.inf == np.all(needle._back[:, 0]), "Not inf backtraces for initial column"
+    x,y,z = needle.align(seq1, seq2) 
 
 def test_nw_backtrace():
     """
@@ -26,8 +30,26 @@ def test_nw_backtrace():
     """
     seq3, _ = read_fasta("./data/test_seq3.fa")
     seq4, _ = read_fasta("./data/test_seq4.fa")
-    pass
-
+    needle = NeedlemanWunsch("./substitution_matrices/BLOSUM62.mat", -10, -1)
+    x,y,z = needle.align(seq3, seq4)
+    # Tests last position of backtrace
+    mx_list = [needle._align_matrix[-1, -1], needle._gapA_matrix[-1,-1], needle._gapB_matrix[-1,-1]]
+    idx = np.argmax(mx_list)
+    if idx == 0:
+        assert y[-1] == z[-1], "Last position is incorrect"
+    elif idx == 1:
+        assert y[-1] == "-", "Last position is incorrect"
+    else:
+        assert z[-1] == "-", "Last position is incorrect"
+    # Tests first position of backtrace
+    mx_list = [needle._align_matrix[0, 0], needle._gapA_matrix[0,0], needle._gapB_matrix[0,0]]
+    idx = np.argmax(mx_list)
+    if idx == 0:
+        assert y[0] == z[0], "First position is incorrect"
+    elif idx == 1:
+        assert y[0] == "-", "First position is incorrect"
+    else:
+        assert z[0] == "-", "First position is incorrect"
 
 
 
